@@ -11,7 +11,7 @@ export type janitorClass = typeof(janitorService.New())
 function janitorMethods.AddObject<Object>(self: janitorClass, object: Object, identifier: string?): Object
 	if identifier then
 		if self.identityMap[identifier] then
-			self:Clean(self.identityMap[identifier])
+			self:CleanObject(self.identityMap[identifier])
 		end
 
 		self.identityMap[identifier] = object
