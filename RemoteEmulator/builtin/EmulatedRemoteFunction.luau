@@ -43,6 +43,7 @@ remoteFunction.__newindex = function(tbl: TypeLibrary.REMOTE_FUNCTION_MOCK, key,
 end
 
 function remoteFunction.new(remoteID: string, emulatorMock: TypeLibrary.EMULATOR_MOCK): TypeLibrary.REMOTE_FUNCTION_MOCK
+	local remoteJanitor = emulatorMock.Janitor
 	local remoteMock = {
 		_Props = {
 			Emulator = emulatorMock,
@@ -56,6 +57,11 @@ function remoteFunction.new(remoteID: string, emulatorMock: TypeLibrary.EMULATOR
 		OnServerInvoke = nil,
 		OnClientInvoke = nil
 	}
+	
+	remoteJanitor:AddObject(function()
+		remoteMock._Listeners.ClientRequest:Destroy()
+		remoteMock._Listeners.ServerRequest:Destroy()		
+	end)
 	
 	return setmetatable(remoteMock, remoteFunction)
 end
