@@ -1,3 +1,5 @@
+local RunService = game:GetService("RunService")
+
 local packages = script.Packages
 local builtin = script.builtin
 
@@ -17,6 +19,8 @@ for methodID, methodFn in InstanceMethods do
 	remoteTypes.RemoteEvent.__index[methodID] = methodFn	
 	remoteTypes.RemoteFunction.__index[methodID] = methodFn	
 end
+
+local RUN_EMULATOR = RunService:IsStudio() and not RunService:IsRunning()
 
 Registration.RegisterContainer("RemoteFunctions")
 Registration.RegisterContainer("RemoteEvents")
@@ -51,6 +55,24 @@ function emulator.newRemoteFunction(remoteID: string)
 		remoteID, 
 		remoteTypes.RemoteFunction.new(remoteID, newEmulatorMock())
 	)
+end
+
+--//Event Wrappers
+
+function emulator.WrapRemoteEvent(remote: RemoteEvent): RemoteEvent
+	if RUN_EMULATOR then
+		remote = emulator.newRemoteEvent(remote.Name)
+	end
+	
+	return remote
+end
+
+function emulator.WrapRemoteFunction(remote: RemoteFunction): RemoteFunction
+	if RUN_EMULATOR then
+		remote = emulator.newRemoteFunction(remote.Name)
+	end
+
+	return remote
 end
 
 return emulator
