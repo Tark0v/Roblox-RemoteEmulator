@@ -21,9 +21,11 @@ for methodID, methodFn in InstanceMethods do
 end
 
 local RUN_EMULATOR = RunService:IsStudio() and not RunService:IsRunning()
+local REMOTE_EVENT_STRING = "RemoteEvent"
+local REMOTE_FUNCTION_STRING = "RemoteFunction"
 
-Registration.RegisterContainer("RemoteFunctions")
-Registration.RegisterContainer("RemoteEvents")
+Registration.RegisterContainer(REMOTE_EVENT_STRING)
+Registration.RegisterContainer(REMOTE_FUNCTION_STRING)
 
 local function newEmulatorMock()
 	local remoteJanitor = Janitor.New()
@@ -42,19 +44,21 @@ local function newEmulatorMock()
 end
 
 function emulator.newRemoteEvent(remoteID: string)
-	return Registration.AddToRegistry(
-		"RemoteEvents", 
-		remoteID, 
-		remoteTypes.RemoteEvent.new(remoteID, newEmulatorMock())
-	)
+	return Registration.GetFromRegistry(REMOTE_EVENT_STRING, remoteID) 
+		or Registration.AddToRegistry(
+			REMOTE_EVENT_STRING, 
+			remoteID, 
+			remoteTypes.RemoteEvent.new(remoteID, newEmulatorMock())
+		)
 end
 
 function emulator.newRemoteFunction(remoteID: string)
-	return Registration.AddToRegistry(
-		"RemoteFunctions", 
-		remoteID, 
-		remoteTypes.RemoteFunction.new(remoteID, newEmulatorMock())
-	)
+	return Registration.GetFromRegistry(REMOTE_FUNCTION_STRING, remoteID) 
+		or Registration.AddToRegistry(
+			REMOTE_FUNCTION_STRING, 
+			remoteID, 
+			remoteTypes.RemoteFunction.new(remoteID, newEmulatorMock())
+		)
 end
 
 --//Event Wrappers

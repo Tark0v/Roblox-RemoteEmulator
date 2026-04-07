@@ -21,7 +21,7 @@ local remoteFunction = {}
 remoteFunction.__index = remoteFunction
 remoteFunction.__newindex = function(tbl: TypeLibrary.REMOTE_FUNCTION_MOCK, key, item)
 	if key ~= "OnServerInvoke" and key ~= "OnClientInvoke" then
-		return
+		error(`Tried to alter Locked Value {key} with {item}`)
 	end
 	
 	assert(item and typeof(item) == "function", `{key} must be a function`)
