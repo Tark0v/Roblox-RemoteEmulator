@@ -1,4 +1,5 @@
 local RunService = game:GetService("RunService")
+local PlayerService = game:GetService("Players")
 
 local packages = script.Packages
 local builtin = script.builtin
@@ -43,7 +44,7 @@ local function newEmulatorMock()
 	return emulatorMock
 end
 
-function emulator.newRemoteEvent(remoteID: string)
+function emulator.newRemoteEvent(remoteID: string): TypeLibrary.REMOTE_EVENT_MOCK
 	return Registration.GetFromRegistry(REMOTE_EVENT_STRING, remoteID) 
 		or Registration.AddToRegistry(
 			REMOTE_EVENT_STRING, 
@@ -52,7 +53,7 @@ function emulator.newRemoteEvent(remoteID: string)
 		)
 end
 
-function emulator.newRemoteFunction(remoteID: string)
+function emulator.newRemoteFunction(remoteID: string): TypeLibrary.REMOTE_FUNCTION_MOCK
 	return Registration.GetFromRegistry(REMOTE_FUNCTION_STRING, remoteID) 
 		or Registration.AddToRegistry(
 			REMOTE_FUNCTION_STRING, 
@@ -78,5 +79,10 @@ function emulator.WrapRemoteFunction(remote: RemoteFunction): RemoteFunction
 
 	return remote
 end
+
+function emulator.GetRegistration()
+	return Registration
+end
+
 
 return emulator

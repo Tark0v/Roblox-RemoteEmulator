@@ -27,10 +27,10 @@ remoteFunction.__newindex = function(tbl: TypeLibrary.REMOTE_FUNCTION_MOCK, key,
 	assert(item and typeof(item) == "function", `{key} must be a function`)
 	
 	local requestSignal = tbl._Listeners.ServerRequest
-	local invokeSignal = tbl._Props.Emulator.ServerContext
+	local invokeSignal = tbl._Props.Emulator.ClientContext
 	if key == "OnClientInvoke" then
 		requestSignal = tbl._Listeners.ClientRequest
-		invokeSignal = tbl._Props.Emulator.ClientContext
+		invokeSignal = tbl._Props.Emulator.ServerContext
 	end
 	
 	invokeSignal:DisconnectAll()
@@ -106,8 +106,9 @@ end
 
 function remoteFunction.InvokeServer(remoteMock: TypeLibrary.REMOTE_FUNCTION_MOCK, ...)
 	return AwaitRequest(
-		remoteMock._Props.Emulator.ServerContext,
+		remoteMock._Props.Emulator.ClientContext,
 		remoteMock._Listeners.ServerRequest,
+		localPlayer,
 		...)
 end
 
@@ -115,9 +116,8 @@ function remoteFunction.InvokeClient(remoteMock: TypeLibrary.REMOTE_FUNCTION_MOC
 	assert(player:IsDescendantOf(PlayerService), "InvokeClient: player argument must be a Player object")
 	
 	return AwaitRequest(
-		remoteMock._Props.Emulator.ClientContext,
+		remoteMock._Props.Emulator.ServerContext,
 		remoteMock._Listeners.ClientRequest,
-		player,
 		...)
 end
 
