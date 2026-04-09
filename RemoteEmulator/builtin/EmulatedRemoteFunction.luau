@@ -26,15 +26,16 @@ remoteFunction.__newindex = function(tbl: TypeLibrary.REMOTE_FUNCTION_MOCK, key,
 	
 	assert(item and typeof(item) == "function", `{key} must be a function`)
 	
-	local requestSignal = tbl._Listeners.ServerRequest
-	local invokeSignal = tbl._Props.Emulator.ClientContext
+	local requestSignal = tbl._Listeners.ClientRequest
+	local invokeSignal = tbl._Props.Emulator.ServerContext
 	if key == "OnClientInvoke" then
-		requestSignal = tbl._Listeners.ClientRequest
-		invokeSignal = tbl._Props.Emulator.ServerContext
+		requestSignal = tbl._Listeners.ServerRequest
+		invokeSignal = tbl._Props.Emulator.ClientContext
 	end
 	
 	invokeSignal:DisconnectAll()
 	invokeSignal:Connect(function(requestID: any, ...)
+		print("Hello")
 		local res = {item(...)}
 		if #res > 0 then
 			requestSignal:Fire(requestID, table.unpack(res))
@@ -106,18 +107,18 @@ end
 
 function remoteFunction.InvokeServer(remoteMock: TypeLibrary.REMOTE_FUNCTION_MOCK, ...)
 	return AwaitRequest(
-		remoteMock._Props.Emulator.ClientContext,
-		remoteMock._Listeners.ServerRequest,
+		remoteMock._Props.Emulator.ServerContext,
+		remoteMock._Listeners.ClientRequest,
 		localPlayer,
 		...)
 end
 
-function remoteFunction.InvokeClient(remoteMock: TypeLibrary.REMOTE_FUNCTION_MOCK, player, ...)
-	assert(player:IsDescendantOf(PlayerService), "InvokeClient: player argument must be a Player object")
+function remoteFunction.InvokeClient(remoteMock: TypeLibrary.REMOTE_FUNCTION_MOCK, ...)
+	--assert(player:IsDescendantOf(PlayerService), "InvokeClient: player argument must be a Player object")
 	
 	return AwaitRequest(
-		remoteMock._Props.Emulator.ServerContext,
-		remoteMock._Listeners.ClientRequest,
+		remoteMock._Props.Emulator.ClientContext,
+		remoteMock._Listeners.ServerRequest,
 		...)
 end
 

@@ -38,8 +38,8 @@ function remoteEvent.FireServer(remoteMock: TypeLibrary.REMOTE_EVENT_MOCK, ...)
 	remoteMock.OnServerEvent:Fire(localPlayer, ...)
 end
 
-function remoteEvent.FireClient(remoteMock: TypeLibrary.REMOTE_EVENT_MOCK, player: Player, ...)
-	assert(player:IsDescendantOf(PlayerService), "FireClient: player argument must be a Player object")
+function remoteEvent.FireClient(remoteMock: TypeLibrary.REMOTE_EVENT_MOCK, ...)
+	--assert(player:IsDescendantOf(PlayerService), "FireClient: player argument must be a Player object")
 	
 	remoteMock.OnClientEvent:Fire(...)
 end
